@@ -4,6 +4,7 @@
     using Microsoft.EntityFrameworkCore;
     using INH_Back.Data;
     using INH_Back.Models;
+    using Microsoft.AspNetCore.Authorization;
 
     [Route("category/{categoryId}/[controller]")]
     [ApiController]
@@ -100,6 +101,7 @@
         }
 
         [HttpPost]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<ActionResult<Post>> PostPost(int categoryId, Post post)
         {
             if (categoryId < 0)
