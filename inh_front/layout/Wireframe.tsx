@@ -12,7 +12,10 @@ import {
     Paper,
     Dialog,
     Typography,
+    Drawer,
+    IconButton,
 } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 
 interface WireframeProps {
     children?: ReactNode;
@@ -30,11 +33,11 @@ interface WireframeProps {
 }
 
 const Wireframe: React.FC<WireframeProps> = ({
-    children, 
-    userPicture, 
-    categories, 
-    selectedCategory, 
-    onCategorySelect, 
+    children,
+    userPicture,
+    categories,
+    selectedCategory,
+    onCategorySelect,
     onNewPost,
     selectedPost,
     closeModal,
@@ -44,7 +47,7 @@ const Wireframe: React.FC<WireframeProps> = ({
     const [newPost, setNewPost] = useState({ title: '', content: '', categoryId: 0 });
     const [responseMessage, setResponseMessage] = useState<string | null>(null);
     const [newComment, setNewComment] = useState('');
-
+    const [drawerOpen, setDrawerOpen] = useState(false);
 
     const handleCategoryClick = (id: number) => {
         onCategorySelect(id);
@@ -91,43 +94,100 @@ const Wireframe: React.FC<WireframeProps> = ({
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
             <AppBar position="sticky" color="default" elevation={1}>
-                <Container
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: 1,
-                        flexDirection: { xs: 'column', md: 'row' }, // Stack for smaller screens
-                    }}
-                >
-                    <Avatar
-                        src={userPicture}
-                        alt="User Profile Picture"
-                        sx={{ bgcolor: 'grey.700', marginBottom: { xs: 2, md: 0 } }}
-                    />
-                    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
-                        {['Dashboard', 'Profile', 'Make Post'].map((link) => (
-                            <Button
-                                key={link}
-                                sx={{ color: 'text.primary' }}
-                                onClick={link === 'Make Post' ? handleOpenNewPost : undefined}
-                            >
-                                {link}
-                            </Button>
-                        ))}
-                    </Box>
-                    <TextField
-                        label="Search"
-                        variant="outlined"
-                        size="small"
-                        sx={{ maxWidth: 160 }}
-                    />
-                </Container>
+            <Container
+    sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 1,
+        flexDirection: 'row',
+    }}
+>
+    {/* Hamburger Menu (Small Screens) */}
+    <IconButton
+        onClick={() => setDrawerOpen(true)}
+        sx={{
+            display: { xs: 'block', md: 'none' }, // Visible only on small screens
+            marginRight: 2, // Adds spacing
+        }}
+    >
+        <MenuIcon />
+    </IconButton>
+
+    {/* Buttons (Always Visible) */}
+    <Box
+        sx={{
+            display: 'flex',
+            gap: 2,
+            alignItems: 'center',
+            flexGrow: 1, // Ensures the avatar is pushed to the far right
+            marginLeft: { xs: 2, md: 0 }, // Adds spacing for better alignment on small screens
+        }}
+    >
+        {['Dashboard', 'Profile', 'Make Post'].map((link) => (
+            <Button
+                key={link}
+                sx={{
+                    color: 'text.primary',
+                }}
+                onClick={link === 'Make Post' ? handleOpenNewPost : undefined}
+            >
+                {link}
+            </Button>
+        ))}
+    </Box>
+
+    {/* User Avatar (Always on the Right) */}
+    <Avatar
+        src={userPicture}
+        alt="User Profile Picture"
+        sx={{
+            bgcolor: 'grey.700',
+            marginLeft: 2,
+        }}
+    />
+</Container>
+
             </AppBar>
 
+            <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+            <List>
+                        {categories.map((category) => (
+                            <ListItem
+                                key={category.id}
+                                component="button"
+                                onClick={() => handleCategoryClick(category.id)}
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    textAlign: 'left',
+                                    width: '100%',
+                                    padding: 1,
+                                    backgroundColor: selectedCategory === category.id ? 'grey.300' : 'transparent',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    '&:hover': { backgroundColor: 'grey.300' },
+                                }}
+                            >
+                                <ListItemText primary={category.name} />
+                            </ListItem>
+                        ))}
+                    </List>
+            </Drawer>
+
             <Box sx={{ display: 'flex', flexGrow: 1, overflow: 'hidden' }}>
-                <Box component={Paper} elevation={1} sx={{ width: 250, height: '100%', overflowY: 'auto', padding: 2 }}>
-                <Typography variant="h6">Categories</Typography>
+                <Box
+                    component={Paper}
+                    elevation={1}
+                    sx={{
+                        width: { xs: '100%', md: 250 },
+                        height: '100%',
+                        overflowY: 'auto',
+                        padding: 2,
+                        display: { xs: 'none', md: 'block' },
+                    }}
+                >
+                    <Typography variant="h6">Categories</Typography>
                     <List>
                         {categories.map((category) => (
                             <ListItem
