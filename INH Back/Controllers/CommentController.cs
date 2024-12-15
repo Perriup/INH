@@ -114,13 +114,13 @@
                 return BadRequest();
             }
 
-            comment.CommentId = post.Comments.Count + 1;
+            comment.CommentId = post.Comments.Any()
+                ? post.Comments.Max(c => c.CommentId) + 1
+                : 1;
 
             comment.PostId = postId;
 
             comment.CategoryId = categoryId;
-
-            post.Comments.Add(comment);
 
             _context.Comments.Add(comment);
             var result = await _context.SaveChangesAsync();

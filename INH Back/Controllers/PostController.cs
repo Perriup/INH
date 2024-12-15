@@ -5,6 +5,22 @@
     using INH_Back.Data;
     using INH_Back.Models;
     using Microsoft.AspNetCore.Authorization;
+    /*
+     * 
+     * 
+     * 
+     * USER DIFFERENTIATE
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     */
+
 
     [Route("category/{categoryId}/[controller]")]
     [ApiController]
@@ -45,6 +61,7 @@
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> PutPost(int categoryId, int id, Post post)
         {
             var category = await _context.Categories.FindAsync(categoryId);
@@ -101,7 +118,6 @@
         }
 
         [HttpPost]
-        [Authorize(Policy = "AdminPolicy")]
         public async Task<ActionResult<Post>> PostPost(int categoryId, Post post)
         {
             if (categoryId < 0)
@@ -115,11 +131,15 @@
                 return BadRequest();
             }
 
-            post.PostId = category.Posts.Count + 1;
+            var maxPostId = await _context.Posts
+                .Where(p => p.CategoryId == categoryId)
+                .Select(p => p.PostId)
+                .ToListAsync(); // Bring the data into memory
+
+            post.PostId = (maxPostId.Any() ? maxPostId.Max() : 0) + 1;
+
 
             post.CategoryId = categoryId;
-
-            category.Posts.Add(post);
 
             _context.Posts.Add(post);
 
@@ -136,6 +156,7 @@
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> DeletePost(int categoryId, int id)
         {
             var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostId == id && p.CategoryId == categoryId);

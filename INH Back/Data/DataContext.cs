@@ -60,7 +60,7 @@ namespace INH_Back.Data
             modelBuilder.Entity<User>()
                 .HasKey(u => u.Sub);
             modelBuilder.Entity<User>().HasData(
-                new User { Sub = "1", Name = "User 1", Email = "zymantas.petreikis@gmail.com", Role = "Admin" }
+                new User { Sub = "1", Name = "User 1", Email = "zymantas.petreikis@gmail.com", Role = "Admin", Picture = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixabay.com%2Fvectors%2Fblank-profile-picture-mystery-man-973460%2F&psig=AOvVaw3jsKXntUlwhE4yR_Wt5sGJ&ust=1734294411586000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCNDE9byMqIoDFQAAAAAdAAAAABAE" }
             );
         }
     }

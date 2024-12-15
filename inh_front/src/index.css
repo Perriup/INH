@@ -13,6 +13,20 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Prevent unintended scrollbars */
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -24,10 +38,22 @@ a:hover {
 
 body {
   margin: 0;
+  padding: 0; /* Ensure no extra padding */
+  height: 100%; /* Full height */
+  width: 100%; /* Full width */
+  overflow: hidden; /* Prevent scrollbars if unnecessary */
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  flex-direction: column; /* Stack app components vertically */
+  box-sizing: border-box; /* Include borders and padding in size calculations */
+  border: none; /* Explicitly remove borders */
+  box-shadow: none; /* Explicitly remove shadows */
+}
+
+#root {
+  flex: 1; /* Allow the app to take the remaining space */
+  display: flex;
+  flex-direction: column; /* Ensure content is column-aligned */
+  min-height: 100%; /* Ensure the root is at least viewport height */
 }
 
 h1 {

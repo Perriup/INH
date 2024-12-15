@@ -8,6 +8,7 @@
         public string Email { get; set; }
         public string Name { get; set; }
         public string Role { get; set; }
+        public string Picture { get; set; }
         public List<Post> Posts { get; set; }
         public User() { }
         public User(string sub, string email, string name, string picture, string role)
@@ -23,6 +24,7 @@
             {
                 Role = role;
             }
+            Picture = picture;
             Posts = new List<Post>();
         }
         public override string ToString()
@@ -50,6 +52,7 @@
             Email = user.Email;
             Name = user.Name;
             Role = user.Role;
+            Picture = user.Picture;
         }
 
         public void Update(string guid, string email, string name, string picture, string role)
@@ -58,6 +61,7 @@
             Email = email;
             Name = name;
             Role = role;
+            Picture = picture;
         }
 
         public void UpdateName(string name)

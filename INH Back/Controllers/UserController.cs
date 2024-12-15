@@ -124,7 +124,8 @@ namespace INH_Back.Controllers
                         Email = googleUser.Email,
                         Sub = Guid.NewGuid().ToString(),
                         Role = "User",
-                        Name = googleUser.Name
+                        Name = googleUser.Name,
+                        Picture = googleUser.Picture
                     };
 
                     _context.Users.Add(user);
@@ -151,7 +152,8 @@ namespace INH_Back.Controllers
                     new Claim(ClaimTypes.Name, user.Name),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, user.Role),
-                    new Claim(ClaimTypes.NameIdentifier, user.Sub)
+                    new Claim(ClaimTypes.NameIdentifier, user.Sub),
+                    new Claim("picture", user.Picture ?? string.Empty)
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
