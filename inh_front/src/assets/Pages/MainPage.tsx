@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-// import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import Wireframe from '../../../layout/Wireframe';
 // import { Box, Avatar } from '@mui/material';
 // const BACK_END_URL = import.meta.env.VITE_BACK_END_URL;
 
 function MainPage() {
     const [token, setToken] = useState<string | null>(null);
-    // const [decodedInfo, setDecodedInfo] = useState<TokenPayload | null>(null);
+    const [decodedInfo, setDecodedInfo] = useState<DecodedToken | null>(null);
     const [response, setResponse] = useState<string | null>(null);
     // const [categoryId, setCategoryId] = useState<number>(-1);
     const [picture, setPicture] = useState<string | null>(null);
@@ -14,6 +14,12 @@ function MainPage() {
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
     const [posts, setPosts] = useState<{ id: number; title: string; content: string }[]>([]);
     const [selectedPost, setSelectedPost] = useState<{ id: number; title: string; content: string; comments: any[] } | null>(null);
+    const [update, setUpdate] = useState<boolean>(true);
+
+    interface DecodedToken {
+        unique_name: string;
+        role: string;
+    }
 
     useEffect(() => {
         const validateTokenAndFetchCategories = async () => {
@@ -26,6 +32,11 @@ function MainPage() {
             setToken(storedToken);
             const userPicture = localStorage.getItem('userPicture');
             if (userPicture) setPicture(userPicture);
+
+            const decoded = jwtDecode<DecodedToken>(storedToken);
+            setDecodedInfo(decoded);
+
+            console.log("decoded:", decoded);
 
             try {
                 const response = await fetch(`https://localhost:7187/category`);
@@ -78,10 +89,12 @@ function MainPage() {
         };
 
         fetchPosts();
-    }, [selectedCategory]);
+    }, [selectedCategory, update]);
 
     const handleNewPost = async (postData: { title: string; content: string; categoryId: number }) => {
         const { title, content, categoryId } = postData;
+
+        console.log(selectedCategory);
 
         if (!selectedCategory) {
             return { success: false, message: 'Please select a category before posting.' };
@@ -104,6 +117,7 @@ function MainPage() {
             });
 
             if (res.ok) {
+                setUpdate(!update);
                 return { success: true, message: 'Post added successfully.' };
             } else {
                 const errorText = await res.text();
@@ -168,6 +182,26 @@ function MainPage() {
             console.error('Error adding comment:', error);
         }
     };
+
+    const handleDeletePost = async (postId: number) => {
+        try {
+            const response = await fetch(`https://localhost:7187/category/${selectedCategory}/post/${postId}`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+    
+            if (response.ok) {
+                setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+            } else {
+                console.error('Failed to delete post:', await response.text());
+            }
+        } catch (error) {
+            console.error('Error deleting post:', error);
+        }
+    };
+    
 
     return (
         // <Wireframe>
@@ -235,29 +269,54 @@ function MainPage() {
         onPostClick={handlePostClick}
         closeModal={closeModal}
         addComment={handleAddComment}
+        decodedInfo={decodedInfo}
         >
         {/* Pass posts as children */}
         <div>
-            {posts.length > 0 ? (
-                posts.map((post) => (
-                    <div
-                        key={post.id}
-                        onClick={() => handlePostClick(post.id)}
+        {posts.length > 0 ? (
+            posts.map((post) => (
+            <div
+                key={post.id}
+                onClick={() => handlePostClick(post.id)} // Handles comment loading
+                style={{
+                    marginBottom: '1rem',
+                    padding: '1rem',
+                    border: '1px solid #ccc',
+                    borderRadius: '5px',
+                    position: 'relative',
+                    fontFamily: 'Oswald',
+                    cursor: 'pointer', // Indicate clickability
+                }}
+            >
+                <h3>{post.title}</h3>
+                <p>{post.content}</p>
+                {decodedInfo?.role === 'Admin' && (
+                    <button
+                        onClick={(event) => {
+                            event.stopPropagation(); // Prevent the post click from firing
+                            handleDeletePost(post.id);
+                        }}
                         style={{
-                            marginBottom: '1rem',
-                            padding: '1rem',
-                            border: '1px solid #ccc',
+                            position: 'absolute',
+                            top: '10px',
+                            right: '10px',
+                            backgroundColor: '#83B4FF',
+                            color: '#FFF',
+                            border: 'none',
+                            padding: '0.5rem',
                             cursor: 'pointer',
+                            borderRadius: '5px',
                         }}
                     >
-                        <h3>{post.title}</h3>
-                        <p>{post.content}</p>
-                    </div>
-                ))
-            ) : (
-                <p>No posts available for the selected category.</p>
-            )}
-        </div>
+                        Delete
+                    </button>
+                )}
+            </div>
+            ))
+        ) : (
+            <p>No posts available for the selected category.</p>
+        )}
+    </div>
     </Wireframe>
     );
 }
