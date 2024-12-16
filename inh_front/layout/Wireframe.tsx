@@ -118,14 +118,14 @@ const Wireframe: React.FC<WireframeProps> = ({
         localStorage.removeItem('userPicture');
     
         // Redirect to login page
-        window.location.href = '/login';
+        window.location.href = '/';
     };
 
     const handleCreateCategory = async () => {
         if (!newCategoryName.trim()) return;
     
         try {
-            const response = await fetch(`https://localhost:7187/category`, {
+            const response = await fetch(`https://inhback20241111003517.azurewebsites.net/category`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ const Wireframe: React.FC<WireframeProps> = ({
     //used only when a new category is made
     const fetchCategories = async () => {
         try {
-            const response = await fetch(`https://localhost:7187/category`, {
+            const response = await fetch(`https://inhback20241111003517.azurewebsites.net/category`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
                 },
@@ -173,7 +173,7 @@ const Wireframe: React.FC<WireframeProps> = ({
 
     const handleDeleteCategory = async (categoryId: number) => {
         try {
-            const response = await fetch(`https://localhost:7187/Category/${categoryId}`, {
+            const response = await fetch(`https://inhback20241111003517.azurewebsites.net/Category/${categoryId}`, {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
@@ -200,7 +200,7 @@ const Wireframe: React.FC<WireframeProps> = ({
         console.log('Comment ID:', commentId);
 
         try {
-            const response = await fetch(`https://localhost:7187/category/${selectedCategory}/post/${postId}/comment/${commentId}`, {
+            const response = await fetch(`https://inhback20241111003517.azurewebsites.net/category/${selectedCategory}/post/${postId}/comment/${commentId}`, {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
@@ -221,7 +221,7 @@ const Wireframe: React.FC<WireframeProps> = ({
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch('https://localhost:7187/User', {
+            const response = await fetch('https://inhback20241111003517.azurewebsites.net/User', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
                 },
@@ -249,7 +249,7 @@ const Wireframe: React.FC<WireframeProps> = ({
         }
     
         try {
-            const response = await fetch(`https://localhost:7187/User/${userId}`, {
+            const response = await fetch(`https://inhback20241111003517.azurewebsites.net/User/${userId}`, {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,

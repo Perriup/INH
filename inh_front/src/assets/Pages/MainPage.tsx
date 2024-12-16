@@ -39,7 +39,7 @@ function MainPage() {
             console.log("decoded:", decoded);
 
             try {
-                const response = await fetch(`https://localhost:7187/category`);
+                const response = await fetch(`https://inhback20241111003517.azurewebsites.net/category`);
                 if (response.ok) {
                     const data = await response.json();
                     const mappedCategories = data.map((category: any) => ({
@@ -70,7 +70,7 @@ function MainPage() {
             }
 
             try {
-                const response = await fetch(`https://localhost:7187/category/${selectedCategory}/Post`);
+                const response = await fetch(`https://inhback20241111003517.azurewebsites.net/category/${selectedCategory}/Post`);
                 if (response.ok) {
                     const data = await response.json();
                     setPosts(data.map((post: any) => ({
@@ -107,7 +107,7 @@ function MainPage() {
         try {
             console.log("Category id", categoryId);
 
-            const res = await fetch(`https://localhost:7187/category/${categoryId}/Post`, {
+            const res = await fetch(`https://inhback20241111003517.azurewebsites.net/category/${categoryId}/Post`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -131,7 +131,7 @@ function MainPage() {
 
     const handlePostClick = async (postId: number) => {
         try {
-            const response = await fetch(`https://localhost:7187/category/${selectedCategory}/Post/${postId}/Comment`);
+            const response = await fetch(`https://inhback20241111003517.azurewebsites.net/category/${selectedCategory}/Post/${postId}/Comment`);
             if (response.ok) {
                 const data = await response.json();
                 const selected = posts.find((post) => post.id === postId);
@@ -155,7 +155,7 @@ function MainPage() {
 
     const handleAddComment = async (postId: number, comment: string) => {
         try {
-            const response = await fetch(`https://localhost:7187/category/${selectedCategory}/post/${postId}/Comment`, {
+            const response = await fetch(`https://inhback20241111003517.azurewebsites.net/category/${selectedCategory}/post/${postId}/Comment`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -185,7 +185,7 @@ function MainPage() {
 
     const handleDeletePost = async (postId: number) => {
         try {
-            const response = await fetch(`https://localhost:7187/category/${selectedCategory}/post/${postId}`, {
+            const response = await fetch(`https://inhback20241111003517.azurewebsites.net/category/${selectedCategory}/post/${postId}`, {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,
