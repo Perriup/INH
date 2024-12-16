@@ -18,7 +18,7 @@ function LoginPage() {
 
         try {
             // Send the token to the backend API for authentication
-            const response = await fetch(`https://localhost:7187/User/authenticate`, {
+            const response = await fetch(`https://inhback20241111003517.azurewebsites.net/User/authenticate`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -41,7 +41,7 @@ function LoginPage() {
             localStorage.setItem("userPicture", decoded.picture);
 
             //Move to a MainPage
-            window.location.href = "/main"
+            window.location.href = "/"
         } catch (error) {
             console.error("Login failed:", error);
         }
