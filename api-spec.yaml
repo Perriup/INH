@@ -1,0 +1,226 @@
+openapi: 3.0.1
+info:
+  title: INH Backend API
+  description: REST API for managing categories, posts, comments, and users in the INH application.
+  version: 1.0.0
+servers:
+  - url: https://inhback20241111003517.azurewebsites.net
+    description: Production server
+
+paths:
+  /Category:
+    get:
+      summary: Fetch all categories
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+    post:
+      summary: Create a new category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+      responses:
+        '201':
+          description: Category created successfully
+        '400':
+          description: Bad request
+  /Category/{id}:
+    get:
+      summary: Fetch a category by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '404':
+          description: Category not found
+    delete:
+      summary: Delete a category by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Category deleted successfully
+        '404':
+          description: Category not found
+
+  /category/{categoryId}/Post:
+    get:
+      summary: Fetch posts in a category
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+    post:
+      summary: Create a new post in a category
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+      responses:
+        '201':
+          description: Post created successfully
+        '400':
+          description: Bad request
+
+  /User/authenticate:
+    post:
+      summary: Authenticate a user using Google OAuth token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT token
+        '400':
+          description: Invalid or missing token
+
+  /User:
+    get:
+      summary: Fetch all users
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+  /User/{id}:
+    get:
+      summary: Fetch user details by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      summary: Delete a user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          description: User not found
+
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        categoryId:
+          type: integer
+        name:
+          type: string
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Post'
+    Post:
+      type: object
+      properties:
+        postId:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        categoryId:
+          type: integer
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+    Comment:
+      type: object
+      properties:
+        commentId:
+          type: integer
+        text:
+          type: string
+        postId:
+          type: integer
+        categoryId:
+          type: integer
+    User:
+      type: object
+      properties:
+        sub:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+        picture:
+          type: string
